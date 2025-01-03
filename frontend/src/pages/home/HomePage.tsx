@@ -1,6 +1,6 @@
 import Topbar from "@/components/Topbar";
 import { useMusicStore } from "@/stores/useMusicStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FeaturedSection from "./components/FeaturedSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
@@ -18,6 +18,7 @@ const HomePage = () => {
 	} = useMusicStore();
 
 	const { initializeQueue } = usePlayerStore();
+	const [greeting, setGreeting] = useState("Hi");
 
 	useEffect(() => {
 		fetchFeaturedSongs();
@@ -32,12 +33,44 @@ const HomePage = () => {
 		}
 	}, [initializeQueue, madeForYouSongs, trendingSongs, featuredSongs]);
 
+	useEffect(() => {
+		// Fetch time from the internet
+		const fetchTime = async () => {
+			try {
+				const response = await fetch("https://worldtimeapi.org/api/ip");
+				const data = await response.json();
+				const hour = new Date(data.datetime).getHours();
+
+				if (hour < 12) {
+					setGreeting("Good Morning");
+				} else if (hour < 18) {
+					setGreeting("Good Afternoon");
+				} else {
+					setGreeting("Good Evening");
+				}
+			} catch (error) {
+				console.error("Error fetching time:", error);
+				// Fallback to local system time if API fails
+				const hour = new Date().getHours();
+				if (hour < 12) {
+					setGreeting("Good Morning");
+				} else if (hour < 18) {
+					setGreeting("Good Afternoon");
+				} else {
+					setGreeting("Good Evening");
+				}
+			}
+		};
+
+		fetchTime();
+	}, []);
+
 	return (
 		<main className='rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900'>
 			<Topbar />
 			<ScrollArea className='h-[calc(100vh-180px)]'>
 				<div className='p-4 sm:p-6'>
-					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>Good afternoon</h1>
+					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>{greeting}</h1>
 					<FeaturedSection />
 
 					<div className='space-y-8'>

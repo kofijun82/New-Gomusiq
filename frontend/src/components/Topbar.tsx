@@ -1,4 +1,4 @@
-import { SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedOut, UserButton, SignedIn } from "@clerk/clerk-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import SignInOAuthButtons from "./SignInOAuthButtons";
@@ -8,7 +8,6 @@ import { buttonVariants } from "./ui/button";
 
 const Topbar = () => {
 	const { isAdmin } = useAuthStore();
-	console.log({ isAdmin });
 
 	return (
 		<div
@@ -27,6 +26,13 @@ const Topbar = () => {
 						Admin Dashboard
 					</Link>
 				)}
+
+				<SignedIn>
+					<Link to={"/user"} className={cn(buttonVariants({ variant: "outline" }))}>
+						<LayoutDashboardIcon className='size-4  mr-2' />
+						My Library
+					</Link>
+				</SignedIn>
 
 				<SignedOut>
 					<SignInOAuthButtons />

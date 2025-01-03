@@ -7,6 +7,7 @@ interface PlayerStore {
 	isPlaying: boolean;
 	queue: Song[];
 	currentIndex: number;
+	
 
 	initializeQueue: (songs: Song[]) => void;
 	playAlbum: (songs: Song[], startIndex?: number) => void;
@@ -14,6 +15,7 @@ interface PlayerStore {
 	togglePlay: () => void;
 	playNext: () => void;
 	playPrevious: () => void;
+	
 }
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
@@ -21,7 +23,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 	isPlaying: false,
 	queue: [],
 	currentIndex: -1,
-
+	
 	initializeQueue: (songs: Song[]) => {
 		set({
 			queue: songs,
@@ -87,9 +89,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 		});
 	},
 
+
 	playNext: () => {
 		const { currentIndex, queue } = get();
 		const nextIndex = currentIndex + 1;
+
+	
 
 		// if there is a next song to play, let's play it
 		if (nextIndex < queue.length) {
@@ -122,8 +127,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 		}
 	},
 	playPrevious: () => {
-		const { currentIndex, queue } = get();
+		const { currentIndex, queue} = get();
 		const prevIndex = currentIndex - 1;
+
+	
 
 		// theres a prev song
 		if (prevIndex >= 0) {

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { Song } from "@/types";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play} from "lucide-react";
 
 const PlayButton = ({ song }: { song: Song }) => {
 	const { currentSong, isPlaying, setCurrentSong, togglePlay } = usePlayerStore();
@@ -27,6 +27,8 @@ const PlayButton = ({ song }: { song: Song }) => {
 				<Play className='size-5 text-black' />
 			)}
 		</Button>
+
+		
 	);
 };
 export default PlayButton;

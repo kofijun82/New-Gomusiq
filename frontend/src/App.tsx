@@ -1,7 +1,6 @@
 import ChatPage from "./pages/chat/ChatPage";
 import AlbumPage from "./pages/album/AlbumPage";
 import AdminPage from "./pages/admin/AdminPage";
-
 import { Toaster } from "react-hot-toast";
 import NotFoundPage from "./pages/404/NotFoundPage";
 import { Route, Routes } from "react-router-dom";
@@ -9,6 +8,7 @@ import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
 import AuthCallbackPage from "./pages/auth-callback/AuthCallbackPage";
 import MainLayout from "./layout/MainLayout";
 import HomePage from "./pages/home/HomePage";
+import MusicDashboard from "./pages/user/MusicDashboard";
 
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
 				/>
 				<Route path='/auth-callback' element={<AuthCallbackPage />} />
 				<Route path='/admin' element={<AdminPage />} />
+				<Route path='/user' element={<MusicDashboard />} />
 
 				<Route element={<MainLayout />}>
 					<Route path='/' element={<HomePage />} />

@@ -17,36 +17,60 @@ export const PlaybackControls = () => {
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
+	
+
 
 	useEffect(() => {
-		audioRef.current = document.querySelector("audio");
 
-		const audio = audioRef.current;
-		if (!audio) return;
 
-		const updateTime = () => setCurrentTime(audio.currentTime);
-		const updateDuration = () => setDuration(audio.duration);
+			audioRef.current = document.querySelector("audio");
 
-		audio.addEventListener("timeupdate", updateTime);
-		audio.addEventListener("loadedmetadata", updateDuration);
+  			const audio = audioRef.current;
+  			if (!audio) return;
 
-		const handleEnded = () => {
-			usePlayerStore.setState({ isPlaying: false });
-		};
+  			const updateTime = () => setCurrentTime(audio.currentTime);
+  			const updateDuration = () => setDuration(audio.duration);
 
-		audio.addEventListener("ended", handleEnded);
+  			audio.addEventListener("timeupdate", updateTime);
+  			audio.addEventListener("loadedmetadata", updateDuration);
 
-		return () => {
-			audio.removeEventListener("timeupdate", updateTime);
-			audio.removeEventListener("loadedmetadata", updateDuration);
-			audio.removeEventListener("ended", handleEnded);
-		};
-	}, [currentSong]);
+  			const handleEnded = () => {
+    		const { playNext, isPlaying } = usePlayerStore.getState();
+
+    		
+        	if (audioRef.current) {
+            	audioRef.current.currentTime = 0; // Reset song
+            if (isPlaying) {
+                audioRef.current.play(); // Play the song again
+            }
+    		} else {
+        		// If no repeat mode, stop playback
+        	usePlayerStore.setState({ isPlaying: false });
+    	}
+  	};
+
+  		audio.addEventListener("ended", handleEnded);
+
+  	return () => {
+    	audio.removeEventListener("timeupdate", updateTime);
+    	audio.removeEventListener("loadedmetadata", updateDuration);
+    	audio.removeEventListener("ended", handleEnded);
+  	};
+}, [currentSong]); 
 
 	const handleSeek = (value: number[]) => {
 		if (audioRef.current) {
 			audioRef.current.currentTime = value[0];
 		}
+	};
+
+
+	  const progressPercentage = duration ? (currentTime / duration) * 100 : 0;
+
+	  const getVolumeBackground = (volume: number) => {
+		const percentage = volume / 100;
+		const color = `linear-gradient(to right, #fc7703 ${percentage * 100}%, #fff ${percentage * 100}%)`;
+		return color;
 	};
 
 	return (
@@ -114,7 +138,7 @@ export const PlaybackControls = () => {
 						<Button
 							size='icon'
 							variant='ghost'
-							className='hidden sm:inline-flex hover:text-white text-zinc-400'
+							className={`hidden sm:inline-flex ${"text-zinc-400 hover:text-white"}`}
 						>
 							<Repeat className='h-4 w-4' />
 						</Button>
@@ -127,7 +151,11 @@ export const PlaybackControls = () => {
 							max={duration || 100}
 							step={1}
 							className='w-full hover:cursor-grab active:cursor-grabbing'
+							style={{
+								background: `linear-gradient(to right, #fc7703 ${progressPercentage}%, #fff ${progressPercentage}%)`
+							}}
 							onValueChange={handleSeek}
+							
 						/>
 						<div className='text-xs text-zinc-400'>{formatTime(duration)}</div>
 					</div>
@@ -154,6 +182,9 @@ export const PlaybackControls = () => {
 							max={100}
 							step={1}
 							className='w-24 hover:cursor-grab active:cursor-grabbing'
+							style={{
+								background: getVolumeBackground(volume) 
+							}}
 							onValueChange={(value) => {
 								setVolume(value[0]);
 								if (audioRef.current) {

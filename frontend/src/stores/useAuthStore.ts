@@ -5,6 +5,11 @@ interface AuthStore {
 	isAdmin: boolean;
 	isLoading: boolean;
 	error: string | null;
+	user: {
+        name: string;
+        email: string;
+      
+    } | null;
 
 	checkAdminStatus: () => Promise<void>;
 	reset: () => void;
@@ -14,6 +19,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 	isAdmin: false,
 	isLoading: false,
 	error: null,
+	user: null,
 
 	checkAdminStatus: async () => {
 		set({ isLoading: true, error: null });
